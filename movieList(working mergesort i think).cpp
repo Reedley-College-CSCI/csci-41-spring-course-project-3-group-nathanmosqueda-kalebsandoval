@@ -1,4 +1,4 @@
-#include "movielist.h"
+#include "movieList.h"
 #include <iostream>
 #include<fstream>
 using namespace std;
@@ -78,7 +78,7 @@ void MovieList::runMovieSystem() {
             modifyMovie();
         }
         else if (decision == 4) {
-            bubbleSort();
+            mergeSortWrapper();
             displayMovieList();
         }
         else if (decision == 5) {
@@ -262,7 +262,7 @@ void MovieList::displayMovieList() {
     loadDataFromFile();
    
   
-    bubbleSort();
+    mergeSortWrapper();
 
     for (int i = 0; i < pos; i++) {
         cout << "Movie: " << movies[i].name << endl;
@@ -272,14 +272,63 @@ void MovieList::displayMovieList() {
     }
 }
 
-void MovieList::bubbleSort() {
-    for (int i = 0; i < pos - 1; i++) {
-        for (int j = 0; j < pos - i - 1; j++) {
-            if (movies[j].name > movies[j + 1].name) {
-                swap(movies[j], movies[j + 1]);
-            }
-        }
+void MovieList::mergeSort(int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+
+        mergeSort(left, mid);
+        mergeSort(mid + 1, right);
+
+        merge(left, mid, right);
     }
+}
+
+void MovieList::merge(int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    Movie* leftArray = new Movie[n1];
+    Movie* rightArray = new Movie[n2];
+
+    for (int i = 0; i < n1; i++) {
+        leftArray[i] = movies[left + i];
+    }
+    for (int j = 0; j < n2; j++) {
+        rightArray[j] = movies[mid + 1 + j];
+    }
+
+    int i = 0;
+    int j = 0;
+    int k = left;
+
+    while (i < n1 && j < n2) {
+        if (leftArray[i].name <= rightArray[j].name) {
+            movies[k] = leftArray[i];
+            i++;
+        } else {
+            movies[k] = rightArray[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1) {
+        movies[k] = leftArray[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2) {
+        movies[k] = rightArray[j];
+        j++;
+        k++;
+    }
+
+    delete[] leftArray;
+    delete[] rightArray;
+}
+void MovieList::mergeSortWrapper() {
+    mergeSort(0, pos - 1);
 }
 
 void MovieList::displayMoviesInRange() {
