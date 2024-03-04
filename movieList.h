@@ -31,7 +31,9 @@ public:
     void displayMovieList();
     void displayMoviesInRange();
     void searchMovie();
-    void bubbleSort();
+    void mergeSort(int, int);
+    void merge(int, int, int);
+    void mergeSortWrapper();
     void resizeArrays();
     void saveDataToFile();
     void loadDataFromFile();
