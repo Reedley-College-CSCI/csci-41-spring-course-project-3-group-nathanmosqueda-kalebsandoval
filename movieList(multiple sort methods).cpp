@@ -78,7 +78,6 @@ void MovieList::runMovieSystem() {
             modifyMovie();
         }
         else if (decision == 4) {
-            mergeSortWrapper();
             displayMovieList();
         }
         else if (decision == 5) {
@@ -258,12 +257,29 @@ void MovieList::modifyMovie() {
 }
 
 void MovieList::displayMovieList() {
- 
     loadDataFromFile();
-   
-  
-    mergeSortWrapper();
-
+   int sortChoice;
+   cout << "Choose list sorting format: " << endl;
+   cout << "1. Sort Alphabetically A-Z" << endl;
+   cout << "2. Sort Alphabetically Z-A" << endl;
+   cout << "3. Sort by Rating 5-1" << endl;
+   cout << "4. Sort by Rating 1-5" << endl;
+   cin >> sortChoice;
+  if (sortChoice == 1){
+    mergeSortWrapperAsc();
+  }
+  else if (sortChoice == 2){
+    mergeSortWrapperDesc();
+  }
+  else if (sortChoice == 3){
+    mergeSortWrapperRatingDesc();
+  }
+  else if (sortChoice == 4){
+    mergeSortWrapperRatingAsc();
+  }
+  else {
+    cout << "Invalid choice. Please try again." << endl;
+  }
     for (int i = 0; i < pos; i++) {
         cout << "Movie: " << movies[i].name << endl;
         cout << "Movie rating: " << movies[i].rating << endl;
@@ -272,18 +288,18 @@ void MovieList::displayMovieList() {
     }
 }
 
-void MovieList::mergeSort(int left, int right) {
+void MovieList::mergeSortAsc(int left, int right) {
     if (left < right) {
         int mid = left + (right - left) / 2;
 
-        mergeSort(left, mid);
-        mergeSort(mid + 1, right);
+        mergeSortAsc(left, mid);
+        mergeSortAsc(mid + 1, right);
 
-        merge(left, mid, right);
+        mergeAsc(left, mid, right);
     }
 }
 
-void MovieList::merge(int left, int mid, int right) {
+void MovieList::mergeAsc(int left, int mid, int right) {
     int n1 = mid - left + 1;
     int n2 = right - mid;
 
@@ -327,8 +343,188 @@ void MovieList::merge(int left, int mid, int right) {
     delete[] leftArray;
     delete[] rightArray;
 }
-void MovieList::mergeSortWrapper() {
-    mergeSort(0, pos - 1);
+void MovieList::mergeSortWrapperAsc() {
+    mergeSortAsc(0, pos - 1);
+}
+void MovieList::mergeSortDesc(int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+
+        mergeSortDesc(left, mid);
+        mergeSortDesc(mid + 1, right);
+
+        mergeDesc(left, mid, right);
+    }
+}
+
+void MovieList::mergeDesc(int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    Movie* leftArray = new Movie[n1];
+    Movie* rightArray = new Movie[n2];
+
+    for (int i = 0; i < n1; i++) {
+        leftArray[i] = movies[left + i];
+    }
+    for (int j = 0; j < n2; j++) {
+        rightArray[j] = movies[mid + 1 + j];
+    }
+
+    int i = 0;
+    int j = 0;
+    int k = left;
+
+    while (i < n1 && j < n2) {
+        // Change the comparison for descending order
+        if (leftArray[i].name > rightArray[j].name) {
+            movies[k] = leftArray[i];
+            i++;
+        } else {
+            movies[k] = rightArray[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1) {
+        movies[k] = leftArray[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2) {
+        movies[k] = rightArray[j];
+        j++;
+        k++;
+    }
+
+    delete[] leftArray;
+    delete[] rightArray;
+}
+
+void MovieList::mergeSortWrapperDesc() {
+    mergeSortDesc(0, pos - 1);
+}
+
+void MovieList::mergeSortRatingDesc(int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+
+        mergeSortRatingDesc(left, mid);
+        mergeSortRatingDesc(mid + 1, right);
+
+        mergeRatingDesc(left, mid, right);
+    }
+}
+
+void MovieList::mergeRatingDesc(int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    Movie* leftArray = new Movie[n1];
+    Movie* rightArray = new Movie[n2];
+
+    for (int i = 0; i < n1; i++) {
+        leftArray[i] = movies[left + i];
+    }
+    for (int j = 0; j < n2; j++) {
+        rightArray[j] = movies[mid + 1 + j];
+    }
+
+    int i = 0;
+    int j = 0;
+    int k = left;
+
+    while (i < n1 && j < n2) {
+        // Change the comparison for descending order based on rating
+        if (leftArray[i].rating > rightArray[j].rating) {
+            movies[k] = leftArray[i];
+            i++;
+        } else {
+            movies[k] = rightArray[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1) {
+        movies[k] = leftArray[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2) {
+        movies[k] = rightArray[j];
+        j++;
+        k++;
+    }
+
+    delete[] leftArray;
+    delete[] rightArray;
+}
+
+void MovieList::mergeSortWrapperRatingDesc() {
+    mergeSortRatingDesc(0, pos - 1);
+}
+void MovieList::mergeSortRatingAsc(int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+
+        mergeSortRatingAsc(left, mid);
+        mergeSortRatingAsc(mid + 1, right);
+
+        mergeRatingAsc(left, mid, right);
+    }
+}
+
+void MovieList::mergeRatingAsc(int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    Movie* leftArray = new Movie[n1];
+    Movie* rightArray = new Movie[n2];
+
+    for (int i = 0; i < n1; i++) {
+        leftArray[i] = movies[left + i];
+    }
+    for (int j = 0; j < n2; j++) {
+        rightArray[j] = movies[mid + 1 + j];
+    }
+
+    int i = 0;
+    int j = 0;
+    int k = left;
+
+    while (i < n1 && j < n2) {
+        if (leftArray[i].rating <= rightArray[j].rating) {
+            movies[k] = leftArray[i];
+            i++;
+        } else {
+            movies[k] = rightArray[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1) {
+        movies[k] = leftArray[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2) {
+        movies[k] = rightArray[j];
+        j++;
+        k++;
+    }
+
+    delete[] leftArray;
+    delete[] rightArray;
+}
+
+void MovieList::mergeSortWrapperRatingAsc() {
+    mergeSortRatingAsc(0, pos - 1);
 }
 
 void MovieList::displayMoviesInRange() {
